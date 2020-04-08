@@ -5,8 +5,7 @@ import main.domain.TrieNode;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -48,7 +47,6 @@ public class Application {
             String text = preProcessFile(path);
 
             if (text != null) {
-                System.out.print(text);
                 int count = 0, index = 0;
 
                 while ((index = text.indexOf(target, index)) != -1) {
@@ -65,7 +63,6 @@ public class Application {
             String text = preProcessFile(path);
 
             if (text != null) {
-                System.out.print(text);
                 int count = 0;
                 Pattern p = Pattern.compile(regex);
                 Matcher m = p.matcher(text);
@@ -80,22 +77,34 @@ public class Application {
     static public TrieNode constructTrie(String text) {
         TrieNode root = new TrieNode('\0');
         TrieNode currentNode = root;
+        Queue<TrieNode> wordNodes = new LinkedList<>();
 
         for (int index = 0; index < text.length(); index++) {
             char c = text.charAt(index);
-            ArrayList<TrieNode> wordNodes = new ArrayList<>();
 
-            if (index == text.length() - 1) {
-                currentNode.getChild(c).setWordEnd(index);
-            } else if (c == ' ') {
+            if (c == ' ') {
                 if (currentNode != root) {
-                    currentNode.setWordEnd(index);
+                    while (wordNodes.peek() != null) {
+                        wordNodes.poll();
+                    }
                     currentNode = root;
                 }
             } else {
+                int queueSize = wordNodes.size();
+
+                for (int i = 0; i < queueSize; i++) {
+                    TrieNode t = wordNodes.poll().getChild(c);
+                    t.addPosition(index);
+                    wordNodes.offer(t);
+                }
                 currentNode = currentNode.getChild(c);
+
+                TrieNode rootNode = root.getChild(c);
+                rootNode.addPosition(index);
+                wordNodes.add(rootNode);
             }
         }
+        wordNodes.clear();
         return root;
     }
 
@@ -105,7 +114,7 @@ public class Application {
 
             if (text != null) {
                 TrieNode trie = constructTrie(text);
-                Integer occurrences = trie.search(target);
+                Integer occurrences = trie.search(text, target);
                 if (occurrences != null) {
                     System.out.println(new Relevance(path, occurrences));
                 }
@@ -116,7 +125,7 @@ public class Application {
     static public void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Enter the search term: ");
-        String searchTerm = scanner.next();
+        String searchTerm = scanner.nextLine();
 
         ArrayList<String> documentPaths = new ArrayList<>();
         documentPaths.add("/Users/mly856/Documents/Github/document-search/files/french_armed_forces.txt");
