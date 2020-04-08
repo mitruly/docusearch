@@ -2,6 +2,8 @@ package main.domain;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class TrieNode {
     private HashMap<Character, TrieNode> children; // Link to contiguous characters
@@ -79,6 +81,40 @@ public class TrieNode {
 
     public Character getValue() {
         return value;
+    }
+
+    static public TrieNode constructTrie(String text) {
+        TrieNode root = new TrieNode('\0');
+        TrieNode currentNode = root;
+        Queue<TrieNode> wordNodes = new LinkedList<>();
+
+        for (int index = 0; index < text.length(); index++) {
+            char c = text.charAt(index);
+
+            if (c == ' ') {
+                if (currentNode != root) {
+                    while (wordNodes.peek() != null) {
+                        wordNodes.poll();
+                    }
+                    currentNode = root;
+                }
+            } else {
+                int queueSize = wordNodes.size();
+
+                for (int i = 0; i < queueSize; i++) {
+                    TrieNode t = wordNodes.poll().getChild(c);
+                    t.addPosition(index);
+                    wordNodes.offer(t);
+                }
+                currentNode = currentNode.getChild(c);
+
+                TrieNode rootNode = root.getChild(c);
+                rootNode.addPosition(index);
+                wordNodes.add(rootNode);
+            }
+        }
+        wordNodes.clear();
+        return root;
     }
 
     @Override

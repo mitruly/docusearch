@@ -1,124 +1,31 @@
 package main;
 
-import main.domain.TrieNode;
+import main.domain.Document;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Application {
-    static public String preProcessFile(String file) {
-        try {
-            StringBuilder sb = new StringBuilder();
-            int c;
-            boolean spaceAppended = false;
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            while ((c = br.read()) != -1) {
-                if ((char) c == '\n' || (char) c == '\r' || (char) c == '\t') {
-                    if (!spaceAppended) {
-                        sb.append(' ');
-                        spaceAppended = true;
-                    }
-                } else {
-                    if ((char) c == ' ') {
-                        if (!spaceAppended) {
-                            sb.append((char) c);
-                            spaceAppended = true;
-                        }
-                    } else {
-                        sb.append((char) c);
-                        spaceAppended = false;
-                    }
-                }
-            }
-            br.close();
-            return sb.toString();
-        } catch (IOException e) {
-            System.out.println("Error processing file: " + file);
-            return null;
-        }
-    }
-
     static public void stringMatch(ArrayList<String> documents, String target) {
         for (String path : documents) {
-            String text = preProcessFile(path);
+            Document document = new Document(path);
 
-            if (text != null) {
-                int count = 0, index = 0;
-
-                while ((index = text.indexOf(target, index)) != -1) {
-                    count++;
-                    index += target.length();
-                }
-                System.out.println(new Relevance(path, count));
-            }
+            document.stringMatch(target);
         }
     }
 
     static public void regexMatch(ArrayList<String> documents, String regex) {
         for (String path : documents) {
-            String text = preProcessFile(path);
+            Document document = new Document(path);
 
-            if (text != null) {
-                int count = 0;
-                Pattern p = Pattern.compile(regex);
-                Matcher m = p.matcher(text);
-                while (m.find()) {
-                    count++;
-                }
-                System.out.println(new Relevance(path, count));
-            }
+            document.regexMatch(regex);
         }
-    }
-
-    static public TrieNode constructTrie(String text) {
-        TrieNode root = new TrieNode('\0');
-        TrieNode currentNode = root;
-        Queue<TrieNode> wordNodes = new LinkedList<>();
-
-        for (int index = 0; index < text.length(); index++) {
-            char c = text.charAt(index);
-
-            if (c == ' ') {
-                if (currentNode != root) {
-                    while (wordNodes.peek() != null) {
-                        wordNodes.poll();
-                    }
-                    currentNode = root;
-                }
-            } else {
-                int queueSize = wordNodes.size();
-
-                for (int i = 0; i < queueSize; i++) {
-                    TrieNode t = wordNodes.poll().getChild(c);
-                    t.addPosition(index);
-                    wordNodes.offer(t);
-                }
-                currentNode = currentNode.getChild(c);
-
-                TrieNode rootNode = root.getChild(c);
-                rootNode.addPosition(index);
-                wordNodes.add(rootNode);
-            }
-        }
-        wordNodes.clear();
-        return root;
     }
 
     static public void searchIndex(ArrayList<String> documents, String target) {
         for (String path : documents) {
-            String text = preProcessFile(path);
+            Document document = new Document(path);
 
-            if (text != null) {
-                TrieNode trie = constructTrie(text);
-                Integer occurrences = trie.search(text, target);
-                if (occurrences != null) {
-                    System.out.println(new Relevance(path, occurrences));
-                }
-            }
+            document.searchIndex(target);
         }
     }
 
