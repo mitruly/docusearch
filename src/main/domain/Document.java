@@ -78,7 +78,7 @@ public class Document {
     public void searchIndex(String target) {
         if (formattedFile != null) {
             TrieNode trie = TrieNode.constructTrie(formattedFile);
-            Integer occurrences = trie.search(formattedFile, target);
+            Integer occurrences = trie.search(formattedFile, target, true);
             if (occurrences != null) {
                 System.out.println(new Relevance(path, occurrences));
             }

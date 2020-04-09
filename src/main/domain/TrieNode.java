@@ -1,5 +1,7 @@
 package main.domain;
 
+import main.utils.StringHelper;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -36,13 +38,13 @@ public class TrieNode {
     /*
      * Supports lookup by single term or phrase
      */
-    public Integer search(String searchText, String target) {
+    public Integer search(String searchText, String target, boolean isCaseSensitive) {
         TrieNode t = this;
         int targetPtr = 0, counter = 0;
         ArrayList<Integer> positions = null;
 
         while (targetPtr < target.length()) {
-            char c = target.charAt(targetPtr);
+            char c = Character.toLowerCase(target.charAt(targetPtr));
 
             if (target.charAt(targetPtr) == ' ') {
                 positions = t.positions;
@@ -59,13 +61,26 @@ public class TrieNode {
         int wordLength = targetPtr;
 
         if (targetPtr == target.length()) {
-            counter = t.positions.size();
+            if (isCaseSensitive) {
+                for (int stringEnd : t.positions) {
+                    if (StringHelper.subStringsMatch(target, 0, searchText, stringEnd - (wordLength - 1), wordLength)) {
+                        counter++;
+                    }
+                }
+            } else {
+                counter = t.positions.size();
+            }
         } else {
             for (int stringEnd : positions) {
+                // for case-sensitivity, we need to back-track
+                if (isCaseSensitive && !StringHelper.subStringsMatch(target, 0, searchText, stringEnd - (wordLength - 1), wordLength)) {
+                    continue;
+                }
+
                 int searchTextPtr = stringEnd + 1;
                 targetPtr = wordLength;
 
-                while (searchTextPtr < searchText.length() && targetPtr < target.length() && searchText.charAt(searchTextPtr) == target.charAt(targetPtr)) {
+                while (searchTextPtr < searchText.length() && targetPtr < target.length() && StringHelper.characterMatch(searchText.charAt(searchTextPtr), target.charAt(targetPtr), isCaseSensitive)) {
                     searchTextPtr++;
                     targetPtr++;
                 }
@@ -89,18 +104,22 @@ public class TrieNode {
         Queue<TrieNode> wordNodes = new LinkedList<>();
 
         for (int index = 0; index < text.length(); index++) {
-            char c = text.charAt(index);
+            char c = Character.toLowerCase(text.charAt(index));
 
+            // identify word boundaries
             if (c == ' ') {
                 if (currentNode != root) {
                     while (wordNodes.peek() != null) {
                         wordNodes.poll();
                     }
+
+                    // restart new words at the root
                     currentNode = root;
                 }
             } else {
                 int queueSize = wordNodes.size();
 
+                // for each word, add all partial suffixes to the root
                 for (int i = 0; i < queueSize; i++) {
                     TrieNode t = wordNodes.poll().getChild(c);
                     t.addPosition(index);
