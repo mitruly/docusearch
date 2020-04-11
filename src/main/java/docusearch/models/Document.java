@@ -54,6 +54,14 @@ public class Document {
         return sb.toString();
     }
 
+    public String getDocumentName() {
+        return documentName;
+    }
+
+    public String getSortName() {
+        return sortName;
+    }
+
     public Relevance stringMatch(String target) {
         int count = 0, index = 0;
 
@@ -61,7 +69,7 @@ public class Document {
             count++;
             index += target.length();
         }
-        return new Relevance(documentName, documentName.toLowerCase(), count);
+        return new Relevance(documentName, sortName, count);
     }
 
     public Relevance regexMatch(String regex) {
@@ -71,11 +79,11 @@ public class Document {
         while (m.find()) {
             count++;
         }
-        return new Relevance(documentName, documentName.toLowerCase(), count);
+        return new Relevance(documentName, sortName, count);
     }
 
-    public Relevance searchIndex(String target) {
-        Integer occurrences = preProcess.search(formattedFile, target, true);
-        return new Relevance(documentName, documentName.toLowerCase(), occurrences);
+    public Relevance searchIndex(String target, boolean isCaseSensitive) {
+        Integer occurrences = preProcess.search(formattedFile, target, isCaseSensitive);
+        return new Relevance(documentName, sortName, occurrences);
     }
 }
