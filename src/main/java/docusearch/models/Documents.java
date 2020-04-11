@@ -25,7 +25,7 @@ public class Documents {
             public int compare(Relevance o1, Relevance o2) {
                 // Sort relevance from largest to smallest, then by document name
                 if (o1.getResultCount().equals(o2.getResultCount())) {
-                    return o1.getDocumentName().compareTo(o2.getDocumentName());
+                    return o1.getSortName().compareTo(o2.getSortName());
                 } else {
                     if (o1.getResultCount() < o2.getResultCount()) {
                         return 1;
@@ -47,7 +47,7 @@ public class Documents {
                     relevance = document.regexMatch(searchText);
                     break;
                 case INDEXED:
-                    relevance = document.searchIndex(searchText);
+                    relevance = document.searchIndex(searchText, true);
             }
             if (relevance.getResultCount() > 0) {
                 searchResults.add(relevance);
