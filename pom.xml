@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>docusearch</groupId>
-	<artifactId>demo</artifactId>
+	<artifactId>docusearch</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>docusearch</name>
 	<description>Document Search project</description>

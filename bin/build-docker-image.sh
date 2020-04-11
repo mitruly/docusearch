@@ -7,7 +7,7 @@ mvn clean install
 mkdir -p target/docker
 
 cp -a docker/. target/docker
-cp target/demo-0.0.1-SNAPSHOT.jar target/docker/docusearch.jar
+cp target/docusearch-0.0.1-SNAPSHOT.jar target/docker/docusearch.jar
 
 cd target/docker
 
