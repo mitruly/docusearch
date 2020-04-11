@@ -1,5 +1,7 @@
 package docusearch.models;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Comparator;
 import java.util.List;
 import java.util.PriorityQueue;
@@ -28,6 +30,7 @@ public class Documents {
             }
         });
 
+        Instant startTime = Instant.now();
         for (Document document : _documents) {
             Relevance relevance = null;
             switch (searchTypes) {
@@ -44,7 +47,8 @@ public class Documents {
                 searchResults.add(relevance);
             }
         }
+        Instant endTime = Instant.now();
 
-        return new SearchResults(searchResults, searchResults.size());
+        return new SearchResults(searchResults, searchResults.size(), _documents.size(), Duration.between(startTime, endTime).toNanos());
     }
 }
