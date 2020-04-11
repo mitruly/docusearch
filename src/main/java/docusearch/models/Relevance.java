@@ -1,4 +1,4 @@
-package main.domain;
+package docusearch.models;
 
 public class Relevance {
     private final String documentName;

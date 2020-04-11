@@ -1,4 +1,4 @@
-package main.utils;
+package docusearch.utils;
 
 public class StringHelper {
     static public String normalizeString(String text) {

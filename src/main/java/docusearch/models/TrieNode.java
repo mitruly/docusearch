@@ -1,6 +1,6 @@
-package main.domain;
+package docusearch.models;
 
-import main.utils.StringHelper;
+import docusearch.utils.StringHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,8 +52,7 @@ public class TrieNode {
             }
 
             if ((t = t.children.get(c)) == null) {
-                System.out.println("Returning due to null search");
-                return null;
+                return 0;
             }
             targetPtr++;
         }
