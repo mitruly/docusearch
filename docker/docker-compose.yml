@@ -1,0 +1,6 @@
+version: "3.0"
+services:
+  docusearch:
+    image: docusearch:latest
+    ports:
+      - "9000:8080"

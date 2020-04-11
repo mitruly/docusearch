@@ -19,7 +19,7 @@ import java.util.List;
 @SpringBootApplication
 @EnableAsync
 public class Application{
-    protected final Log logger = LogFactory.getLog(this.getClass());
+    private static final Log logger = LogFactory.getLog(Application.class);
 
     @Value("${documents.folder}")
     private String documentFolder;
@@ -47,12 +47,16 @@ public class Application{
     // recursively load documents from folder
     @Bean
     public Documents loadDocuments() {
-        logger.info("Loading documents from '" + documentFolder + "'...");
-        final File fileFolder = new File(documentFolder);
         List<Document> documentList = new ArrayList<>();
+        try {
+            final File fileFolder = new File(documentFolder);
+            logger.info("Loading documents from '" + fileFolder + "'...");
 
-        loadDirectory(documentList, fileFolder);
 
+            loadDirectory(documentList, fileFolder);
+        } catch (NullPointerException e) {
+            logger.error("Specified document folder '" + documentFolder + "' does not exist.");
+        }
         return new Documents(documentList);
     }
 

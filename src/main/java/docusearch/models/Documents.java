@@ -7,10 +7,16 @@ import java.util.List;
 import java.util.PriorityQueue;
 
 public class Documents {
-    private final List<Document> _documents;
+    private final List<Document> documents;
+    private final Integer documentCount;
 
     public Documents(List<Document> documents) {
-        this._documents = documents;
+        this.documents = documents;
+        this.documentCount = documents.size();
+    }
+
+    public Integer getDocumentCount() {
+        return documentCount;
     }
 
     public SearchResults search(String searchText, SearchTypes searchTypes) {
@@ -31,7 +37,7 @@ public class Documents {
         });
 
         Instant startTime = Instant.now();
-        for (Document document : _documents) {
+        for (Document document : documents) {
             Relevance relevance = null;
             switch (searchTypes) {
                 case SIMPLE:
@@ -49,6 +55,6 @@ public class Documents {
         }
         Instant endTime = Instant.now();
 
-        return new SearchResults(searchResults, searchResults.size(), _documents.size(), Duration.between(startTime, endTime).toNanos());
+        return new SearchResults(searchResults, searchResults.size(), documentCount, Duration.between(startTime, endTime).toNanos());
     }
 }

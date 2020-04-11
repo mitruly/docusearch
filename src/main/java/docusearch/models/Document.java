@@ -12,13 +12,13 @@ import java.util.regex.Pattern;
 public class Document {
     private TrieNode preProcess;
     private final String formattedFile, documentName, sortName;
-    protected final Log logger = LogFactory.getLog(this.getClass());
+    private final Log logger = LogFactory.getLog(this.getClass());
 
     public Document(String filePath, String documentName, String sortName) throws IOException {
         this.documentName = documentName;
         this.sortName = sortName;
-        // if data is initialized, fetch from db
 
+        // TODO: pull pre-processed trie from database if it exists
         logger.info("Pre-processing file: " + documentName);
 
         // otherwise, pre-process document and store result
@@ -61,7 +61,7 @@ public class Document {
             count++;
             index += target.length();
         }
-        return new Relevance(documentName, count);
+        return new Relevance(documentName, documentName.toLowerCase(), count);
     }
 
     public Relevance regexMatch(String regex) {
@@ -71,11 +71,11 @@ public class Document {
         while (m.find()) {
             count++;
         }
-        return new Relevance(documentName, count);
+        return new Relevance(documentName, documentName.toLowerCase(), count);
     }
 
     public Relevance searchIndex(String target) {
         Integer occurrences = preProcess.search(formattedFile, target, true);
-        return new Relevance(documentName, occurrences);
+        return new Relevance(documentName, documentName.toLowerCase(), occurrences);
     }
 }
