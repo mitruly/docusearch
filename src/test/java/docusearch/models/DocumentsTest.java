@@ -40,14 +40,14 @@ public class DocumentsTest {
         for (SearchType searchType : testSearchTypes) {
             // search result in single file
             SearchResults singleFileResults = documents.search("test", searchType);
-            assertEquals((int) singleFileResults.getTotalDocuments(), 3);
+            assertEquals(singleFileResults.getTotalDocuments().intValue(), 3);
             assertEquals(singleFileResults.getSearchResults().size(), 1);
             assertThat(singleFileResults.getSearchResults(), hasItem(new Relevance(goodDocumentName, goodDocumentName.toLowerCase(), 3)));
-            assertEquals((int) singleFileResults.getTotalResults(), 1);
+            assertEquals(singleFileResults.getTotalResults().intValue(), 1);
 
             // search result in multiple files
             SearchResults multipleFileResults = documents.search("and", searchType);
-            assertEquals((int) multipleFileResults.getTotalDocuments(), 3);
+            assertEquals(multipleFileResults.getTotalDocuments().intValue(), 3);
 
             // check for ordering
             PriorityQueue<Relevance> multipleFileSearchResults = multipleFileResults.getSearchResults();
@@ -55,11 +55,11 @@ public class DocumentsTest {
             assertEquals(multipleFileSearchResults.poll(), new Relevance(anotherFileName, anotherFileName.toLowerCase(), 5));
             assertEquals(multipleFileSearchResults.poll(), new Relevance(nurseryDocumentName, nurseryDocumentName.toLowerCase(), 4));
             assertEquals(multipleFileSearchResults.poll(), new Relevance(goodDocumentName, goodDocumentName.toLowerCase(), 4));
-            assertEquals((int) multipleFileResults.getTotalResults(), 3);
+            assertEquals(multipleFileResults.getTotalResults().intValue(), 3);
 
             // search result in no files
             SearchResults noFileResults = documents.search("doesn't exist", searchType);
-            assertEquals((int) noFileResults.getTotalDocuments(), 3);
+            assertEquals(noFileResults.getTotalDocuments().intValue(), 3);
             assertEquals(noFileResults.getSearchResults().size(), 0);
         }
     }

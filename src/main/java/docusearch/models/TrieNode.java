@@ -22,6 +22,10 @@ public class TrieNode {
         return positions;
     }
 
+    public HashMap<Character, TrieNode> getChildren() {
+        return children;
+    }
+
     public void addPosition(Integer position) {
         positions.add(position);
     }
