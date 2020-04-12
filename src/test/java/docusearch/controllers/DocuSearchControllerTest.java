@@ -14,7 +14,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class HealthControllerTest {
+public class DocuSearchControllerTest {
     private String baseUrl;
     private WireMockServer wireMockServer;
 
@@ -37,13 +37,38 @@ public class HealthControllerTest {
     }
 
     @Test
-    public void testHealthEndpoint() throws IOException {
+    public void testSearchWithoutSearchTextFails() throws IOException {
+        String path = "/search?searchType=simple";
         wireMockServer.stubFor(
-            get(urlEqualTo("/health"))
+            get(urlEqualTo(path))
+                .willReturn(
+                    aResponse()
+                        .withStatus(400)));
+
+        webTestClient.get().uri(path).exchange().expectStatus().isBadRequest();
+    }
+
+    @Test
+    public void testSearchWithoutSearchTypeFails() throws IOException {
+        String path = "/search?searchText=someSearchText";
+        wireMockServer.stubFor(
+            get(urlEqualTo(path))
+                .willReturn(
+                    aResponse()
+                        .withStatus(400)));
+
+        webTestClient.get().uri(path).exchange().expectStatus().isBadRequest();
+    }
+
+    @Test
+    public void testSearchGoodRequestSucceeds() throws IOException {
+        String path = "/search?searchText=someSearchText&searchType=simple";
+        wireMockServer.stubFor(
+            get(urlEqualTo(path))
                 .willReturn(
                     aResponse()
                         .withStatus(200)));
 
-        webTestClient.get().uri(baseUrl + "/health").exchange().expectStatus().isOk();
+        webTestClient.get().uri(path).exchange().expectStatus().isOk();
     }
 }
