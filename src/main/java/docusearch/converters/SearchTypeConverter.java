@@ -1,16 +1,16 @@
 package docusearch.converters;
 
-import docusearch.models.SearchTypes;
+import docusearch.models.SearchType;
 import org.springframework.core.convert.converter.Converter;
 
-public class SearchTypeConverter implements Converter<String, SearchTypes> {
+public class SearchTypeConverter implements Converter<String, SearchType> {
     @Override
-    public SearchTypes convert(String source) {
-        SearchTypes searchType;
+    public SearchType convert(String source) {
+        SearchType searchType;
         try {
-            searchType = SearchTypes.valueOf(source.toUpperCase());
+            searchType = SearchType.valueOf(source.toUpperCase());
         } catch (IllegalArgumentException e) {
-            searchType = SearchTypes.INVALID;
+            searchType = SearchType.INVALID;
         }
         return  searchType;
     }

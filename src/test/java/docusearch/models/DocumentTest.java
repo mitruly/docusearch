@@ -1,7 +1,5 @@
-package docusearch;
+package docusearch.models;
 
-import docusearch.models.Document;
-import docusearch.models.Relevance;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 
@@ -14,7 +12,7 @@ public class DocumentTest {
     public DocumentTest() throws IOException {
         File goodFile = new File(getClass().getResource("/Good_Test_File.txt").getFile());
         String goodFileName = goodFile.getName();
-        goodDocument = new Document(goodFile.getPath(), goodFileName, goodFileName.toLowerCase());
+        goodDocument = new Document(goodFile.getPath(), goodFileName);
     }
 
     @Test
@@ -25,7 +23,7 @@ public class DocumentTest {
     @Test(expectedExceptions = IOException.class)
     public void testInvalidFileThrowsException() throws IOException {
         // confirm good document properties
-        new Document("/bad/file/Name.txt", "Name.txt", "name.txt");
+        new Document("/bad/file/Name.txt", "Name.txt");
     }
 
     @Test

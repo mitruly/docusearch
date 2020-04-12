@@ -1,6 +1,6 @@
 package docusearch.models;
 
-public enum SearchTypes {
+public enum SearchType {
     SIMPLE,
     REGEX,
     INDEXED,

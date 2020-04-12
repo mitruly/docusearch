@@ -36,7 +36,7 @@ public class Application{
             } else {
                 try {
                     String documentName = fileEntry.getName();
-                    documents.add(new Document(fileEntry.getAbsolutePath(), documentName, documentName.toLowerCase()));
+                    documents.add(new Document(fileEntry.getAbsolutePath(), documentName));
                 } catch (IOException e) {
                     logger.error("Encountered error loading file: " + fileEntry.getAbsolutePath());
                 }

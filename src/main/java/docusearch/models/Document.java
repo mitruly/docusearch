@@ -14,9 +14,9 @@ public class Document {
     private final String formattedFile, documentName, sortName;
     private final Log logger = LogFactory.getLog(this.getClass());
 
-    public Document(String filePath, String documentName, String sortName) throws IOException {
+    public Document(String filePath, String documentName) throws IOException {
         this.documentName = documentName;
-        this.sortName = sortName;
+        this.sortName = documentName.toLowerCase();
 
         // TODO: pull pre-processed trie from database if it exists
         logger.info("Pre-processing file: " + documentName);
