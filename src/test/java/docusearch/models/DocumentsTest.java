@@ -39,17 +39,21 @@ public class DocumentsTest {
 
         for (SearchType searchType : testSearchTypes) {
             // search result in single file
-            SearchResults singleFileResults = documents.search("test", searchType);
+            String singleFileSearchText = "test";
+            SearchResults singleFileResults = documents.search(singleFileSearchText, searchType);
+            assertEquals(singleFileResults.getSearchText(), singleFileSearchText);
             assertEquals(singleFileResults.getTotalDocuments().intValue(), 3);
             assertEquals(singleFileResults.getSearchResults().size(), 1);
             assertThat(singleFileResults.getSearchResults(), hasItem(new Relevance(goodDocumentName, goodDocumentName.toLowerCase(), 3)));
             assertEquals(singleFileResults.getTotalResults().intValue(), 1);
 
             // search result in multiple files
-            SearchResults multipleFileResults = documents.search("and", searchType);
+            String multipleFileSearchText = "and";
+            SearchResults multipleFileResults = documents.search(multipleFileSearchText, searchType);
             assertEquals(multipleFileResults.getTotalDocuments().intValue(), 3);
 
             // check for ordering
+            assertEquals(multipleFileResults.getSearchText(), multipleFileSearchText);
             PriorityQueue<Relevance> multipleFileSearchResults = multipleFileResults.getSearchResults();
             assertEquals(multipleFileSearchResults.size(), 3);
             assertEquals(multipleFileSearchResults.poll(), new Relevance(anotherFileName, anotherFileName.toLowerCase(), 5));
@@ -58,7 +62,9 @@ public class DocumentsTest {
             assertEquals(multipleFileResults.getTotalResults().intValue(), 3);
 
             // search result in no files
-            SearchResults noFileResults = documents.search("doesn't exist", searchType);
+            String noFileSearchText = "doesn't exist";
+            SearchResults noFileResults = documents.search(noFileSearchText, searchType);
+            assertEquals(noFileResults.getSearchText(), noFileSearchText);
             assertEquals(noFileResults.getTotalDocuments().intValue(), 3);
             assertEquals(noFileResults.getSearchResults().size(), 0);
         }

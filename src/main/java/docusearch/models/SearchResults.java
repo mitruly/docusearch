@@ -5,19 +5,26 @@ import java.util.PriorityQueue;
 
 public class SearchResults {
     private final PriorityQueue<Relevance> searchResults;
+    private final String searchText;
     private final Integer totalResults, totalDocuments;
     private final Long elapsedNanoseconds;
 
     public SearchResults(
+        String searchText,
         PriorityQueue<Relevance> searchResults,
         Integer totalResults,
         Integer totalDocuments,
         Long elapsedNanoseconds
     ) {
+        this.searchText = searchText;
         this.searchResults = searchResults;
         this.totalResults = totalResults;
         this.totalDocuments = totalDocuments;
         this.elapsedNanoseconds = elapsedNanoseconds;
+    }
+
+    public String getSearchText() {
+        return searchText;
     }
 
     public PriorityQueue<Relevance> getSearchResults() {
@@ -38,7 +45,7 @@ public class SearchResults {
 
     @Override
     public int hashCode() {
-        return Objects.hash(searchResults, totalResults, totalDocuments, elapsedNanoseconds);
+        return Objects.hash(searchText, searchResults, totalResults, totalDocuments, elapsedNanoseconds);
     }
 
     @Override
@@ -47,6 +54,7 @@ public class SearchResults {
         if (o == null || getClass() != o.getClass()) return false;
 
         SearchResults that = (SearchResults) o;
+        if (!searchText.equals(that.searchText)) return false;
         if (!searchResults.equals(that.searchResults)) return false;
         if (!totalResults.equals(that.totalResults)) return false;
         if (!totalDocuments.equals(that.totalDocuments)) return false;

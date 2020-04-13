@@ -40,6 +40,6 @@ public class Documents {
         }
         Instant endTime = Instant.now();
 
-        return new SearchResults(searchResults, searchResults.size(), documentCount, Duration.between(startTime, endTime).toNanos());
+        return new SearchResults(searchText, searchResults, searchResults.size(), documentCount, Duration.between(startTime, endTime).toNanos());
     }
 }
