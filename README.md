@@ -149,6 +149,15 @@ A visual aid for the benchmark:
 
 ![Performance Benchmark](images/perf_benchmark_line_graph.png)
 
+These performance metrics make sense because regex is a greedier search algorithm and requires compiling in addition to specialized
+matching. Simple string search is fast because at most, each character is visited once giving the order of O(N) time complexity.
+
+The indexed search trie construction that used in this implementation takes O(N<sup>2</sup>) time complexity. However, it 
+makes up for this in constant lookup time (in relation to the size of the search text) as it simply has to traverse the trie for the
+initial word lookup and then compare each position for a matching phrase or case sensitive verification. The key is that a trie
+targets only the necessary sections of a text to search for a word. An indexed method will also work more efficiently with unique
+words.
+
 One realization of note is that working with this low-level of micro-benchmarking, we may find more accurate results using a
 micro-benchmark library such as Java Microbenchmark Harness (JMH). 
 
