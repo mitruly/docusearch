@@ -82,7 +82,8 @@ in addition to being able to support Unicode in a scaling manner. Another change
 
 #### Max Heap
 A max heap is used to aggregate the search results from each document since it is more efficient than populating an array and then
-sorting.
+sorting. A custom comparator is also used to resolve conflicts, resulting in the following sort order: total occurrences (high-to-low), sort
+name (lowercase document name).  
 
 ## Architecture
 DocuSearch is designed as a web application since it made the most sense when considering that applications and users would
