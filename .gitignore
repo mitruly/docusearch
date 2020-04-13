@@ -6,4 +6,5 @@ out/
 
 *.DS_Store
 document-search.iml
+.virtualenv/
 
