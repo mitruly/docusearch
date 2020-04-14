@@ -132,7 +132,7 @@ public class TrieNode {
 
                 TrieNode rootNode = root.getChild(c);
                 rootNode.addPosition(index);
-                wordNodes.add(rootNode);
+                wordNodes.offer(rootNode);
             }
         }
         wordNodes.clear();

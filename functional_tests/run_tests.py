@@ -12,6 +12,7 @@ from os.path import isfile, join
 from hamcrest import *
 
 BASE_URL = "http://localhost:9000"
+# BASE_URL = "http://3.17.73.31:9000"
 
 ## health endpoint testing
 def test_health_endpoint_200():
@@ -73,7 +74,7 @@ NANOS_IN_MILLIS = 1000000
 REGEX_SPECIAL_CHARACTERS = "\^$.|?*+()[]{}"
 
 # modifiable settings
-TOTAL_RUNS = 10000
+TOTAL_RUNS = 100000
 NUM_THREADS = 30
 PRINT_THRESHOLD = 1000
 PHRASE_MAX_LENGTH = 2 # must be >= 1
@@ -164,7 +165,7 @@ def output(total_runs, num_threads, start_time):
     print("Average time (simple search): {} milliseconds".format(simple_search_total_nanos/total_runs/NANOS_IN_MILLIS))
     print("Average time (regex search): {} milliseconds".format(regex_search_total_nanos/total_runs/NANOS_IN_MILLIS))
     print("Average time (indexed search): {} milliseconds".format(indexed_search_total_nanos/total_runs/NANOS_IN_MILLIS))
-    print("Total time elapsed: {}".format(time.time() - start_time))
+    print("Total time elapsed: {}".format(end_time - start_time))
 
 def terminate_threads():
     for x in range(len(THREADS)):

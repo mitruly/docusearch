@@ -2,13 +2,13 @@
 
 ## Background
 DocuSearch is a case study that examines three text search techniques given a constraint of matching an exact search term
-or phrase:
+or phrase and returning the results ordered by relevance (number of appearances in search text):
 - Simple (in-order, in-line) matching
 - Regex matching
 - Index searching
 
 While the first two techniques are well-defined, index searching is up to interpretation as some type of index needs to be created
-by pre-processing the document files and utilize it for searching.
+by pre-processing and then used to search documents.
 
 ## Requirements
 The following requirements are recommended to run the project locally:
@@ -25,10 +25,13 @@ The following requirements are recommended to run the project locally:
 
 ## Usage
 ### Running
-The following scripts are available in the `bin` folder to build and run DocuSearch:
+The following scripts are available in the `bin` folder to build and run DocuSearch from the root folder:
 - `build-docker-image.sh`: Builds a new image with an artifact from the current codebase.
 - `start-docusearch.sh`: Starts a container running DocuSearch on `http://localhost:9000`.
 - `remove-docusearch.sh`: Kills and removes DocuSearch containers.
+
+### Unit tests
+Unit tests are run as part of the artifact build process, but can be run directly from the root folder using `mvn test`.
 
 ### Functional tests
 To run the functional tests, first ensure that [`virtualenv`](https://pypi.org/project/virtualenv/) is installed. 
@@ -37,7 +40,7 @@ Navigate to `functional_tests/` and run the `bootstrap.sh` script to initialize 
 To run the tests:
 - Activate your virtual environment (in the `functional_tests` directory): `source .virtualenv/bin/activate`
 - Run the tests using `./run_tests.py`
-- Deactivate your virtual environment
+- Deactivate your virtual environment: `deactivate`
 
 Note: If any of the dependencies in `requirements.txt` change, `bootstrap.sh` should be run again.
 
@@ -130,20 +133,31 @@ A rudimentary benchmarking technique was used where the benchmark was run agains
 there are potentially factors that affected the speed of the results. However, when running the search types with a different of
 trial runs, it was clear that the speed ranking is as follows: indexed, simple, regex.
 
-Search Type | Trial Runs | Time (ms) |
------------ | ---------: | --------: |
-simple      | 10         | 3.9       |
-regex       | 10         | 7.2       |
-indexed     | 10         | 0.0       |
-simple      | 100        | 5.04      |
-regex       | 100        | 13.68     |
-indexed     | 100        | 0.25      |
-simple      | 1000       | 6.30      |
-regex       | 1000       | 8.48      |
-indexed     | 1000       | 0.30      |
-simple      | 10000      | 10.56     |
-regex       | 10000      | 15.86     |
-indexed     | 10000      | 0.81      |
+A benchmark test is included in the functional tests which first parses all of the words in the documents by whitespace in 
+`docker/files` and then randomly chooses 1-2 words to generate as search phrase. The search phrase is run against all search
+techniques with the results aggregated once the tests stop. In preliminary testing, having more than two random words in a phrase
+greatly increased the chances of the phrase not appearing in any documents, so constraining to 1-2 word phrases gives a mix of
+successful and failure matches. 
+
+These tests are run with multiple threads as the web application is able to service requests concurrently.
+
+Note: The total elapsed time for larger numbers of trial runs can take hours, with 100,000 runs taking ~35 minutes using 30 threads.
+There appeared to be an issue getting 2M trial runs as most threads seemed to get starved after a couple of hours.
+
+Search Type | Trial Runs | Average Time (ms) |
+----------- | ---------: | ----------------: |
+simple      | 10         | 3.9               |
+regex       | 10         | 7.2               |
+indexed     | 10         | 0.0               |
+simple      | 100        | 5.04              |
+regex       | 100        | 13.68             |
+indexed     | 100        | 0.25              |
+simple      | 1000       | 6.30              |
+regex       | 1000       | 8.48              |
+indexed     | 1000       | 0.30              |
+simple      | 10000      | 10.56             |
+regex       | 10000      | 15.86             |
+indexed     | 10000      | 0.81              |  
 
 A visual aid for the benchmark:
 
